@@ -2,13 +2,13 @@ import 'package:demopcpsseca/pages/detailpage.dart';
 import 'package:flutter/material.dart';
 
 class dashboard extends StatefulWidget {
-  const dashboard({super.key});
+  dashboard({super.key});
 
   @override
-  State<dashboard> createState() => _dashboardState();
+  State<dashboard> createState() => dashboardState();
 }
 
-class _dashboardState extends State<dashboard> {
+class dashboardState extends State<dashboard> {
 
   horizontallistcard(size, String title, url, date ){
     return GestureDetector(
@@ -79,7 +79,7 @@ class _dashboardState extends State<dashboard> {
     );
   }
 
-  verticallistcard(size, title, url, date, source){
+  static verticallistcard(size, title, url, date, source){
     return  Row(
       children: [
         Column(
