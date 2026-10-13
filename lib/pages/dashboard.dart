@@ -5,10 +5,10 @@ class dashboard extends StatefulWidget {
   const dashboard({super.key});
 
   @override
-  State<dashboard> createState() => _dashboardState();
+  State<dashboard> createState() => dashboardState();
 }
 
-class _dashboardState extends State<dashboard> {
+class dashboardState extends State<dashboard> {
 
   horizontalitem(size, String title, url, date){
     return GestureDetector(
@@ -70,7 +70,7 @@ class _dashboardState extends State<dashboard> {
     );
   }
 
-  verticalllistitem(size,String title, url,date,source){
+  static verticalllistitem(size,String title, url,date,source){
     return  Container(
       margin: EdgeInsets.all(15),
       child: Row(
