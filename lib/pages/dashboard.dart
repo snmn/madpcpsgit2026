@@ -1,3 +1,4 @@
+import 'package:demopcpsseca/controller/apicall.dart';
 import 'package:demopcpsseca/pages/detailpage.dart';
 import 'package:flutter/material.dart';
 
@@ -142,6 +143,13 @@ class dashboardState extends State<dashboard> {
         )
       ],
     );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Apicall.getnewsdata();
   }
 
   @override
