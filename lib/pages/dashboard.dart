@@ -1,5 +1,7 @@
+import 'package:demopcpsseca/controller/apicall.dart';
 import 'package:demopcpsseca/pages/detailpage.dart';
 import 'package:flutter/material.dart';
+import 'package:demopcpsseca/controller/apicall.dart';
 
 class dashboard extends StatefulWidget {
   const dashboard({super.key});
@@ -133,6 +135,13 @@ class dashboardState extends State<dashboard> {
         ],
       ),
     );
+  }
+
+ @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Apicall.getnewsapidata();
   }
 
   @override
