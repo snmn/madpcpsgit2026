@@ -1,4 +1,5 @@
 import 'package:demopcpsseca/controller/apicall.dart';
+import 'package:demopcpsseca/model/news.dart';
 import 'package:demopcpsseca/pages/detailpage.dart';
 import 'package:flutter/material.dart';
 
@@ -145,13 +146,13 @@ class dashboardState extends State<dashboard> {
     );
   }
 
+  Future<news?>? futurenewsdata;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    Apicall.getnewsdata();
+    futurenewsdata = Apicall.getnewsdata();
   }
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -159,95 +160,64 @@ class dashboardState extends State<dashboard> {
       appBar: AppBar(),
       body: Column(
         children: [
-          //horizontal list
-          Row(
-            children: [
-              Container(
-                width: size.width,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      horizontallistcard(
-                          size,
-                          "Hello PCPS news",
-                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
-                          " 02 FEB 2026"),
-                      horizontallistcard(
-                          size,
-                          "Happy Dashain Everyone",
-                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
-                          " 04 FEB 2026"),
-                      horizontallistcard(
-                          size,
-                          "Happy Dashain PCPS ",
-                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
-                          " 04 FEB 2028"),
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
+          FutureBuilder(
+              future: futurenewsdata,
+              builder: (context, AsyncSnapshot<news?> snapshot)
+              {
+                switch (snapshot.connectionState){
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return Center(child: CircularProgressIndicator());
+                  case ConnectionState.active:
+                  case ConnectionState.done:
+                    if(snapshot.hasData){
+                      //show ui
+                      var data = snapshot.data;
+                      return Column(
+                        children: [
+                          Container(
+                            height: size.height/4,
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                padding: EdgeInsets.zero,
+                                itemCount: data!.articles!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return  horizontallistcard(
+                                      size,
+                                      data.articles![index].title!,
+                                      data.articles![index].urlToImage,
+                                      data.articles![index].publishedAt);
+                                }
+                            ),
+                          ),
+                          //vertical list
+                          Container(
+                            height: size.height/1.75,
+                            child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                padding: EdgeInsets.zero,
+                                itemCount: 15,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return  verticallistcard(
+                                      size,
+                                      "PCPS DASHAIN FEST",
+                                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
+                                      "02 FEB 2026",
+                                      "PCPS"
+                                  );
+                                }
+                            ),
+                          ),
+                        ],
+                      );
+                    }else{
+                      return Center(child:
+                        Text("No Data Available"),);
+                    }
+                }
+              }),
 
-          //vertical list
-          Container(
-            height: size.height/1.75,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  verticallistcard(
-                      size,
-                      "PCPS DASHAIN FEST",
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
-                      "02 FEB 2026",
-                      "PCPS"
-                  ),
-                  verticallistcard(
-                      size,
-                      "PCPS DASHAIN FEST",
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
-                      "02 FEB 2026",
-                      "PCPS"
-                  ),
-                  verticallistcard(
-                      size,
-                      "PCPS DASHAIN FEST",
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
-                      "02 FEB 2026",
-                      "PCPS"
-                  ),
-                  verticallistcard(
-                      size,
-                      "PCPS DASHAIN FEST",
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
-                      "02 FEB 2026",
-                      "PCPS"
-                  ),
-                  verticallistcard(
-                      size,
-                      "PCPS DASHAIN FEST",
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
-                      "02 FEB 2026",
-                      "PCPS"
-                  ),
-                  verticallistcard(
-                      size,
-                      "PCPS DASHAIN FEST",
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
-                      "02 FEB 2026",
-                      "PCPS"
-                  ),verticallistcard(
-                      size,
-                      "PCPS DASHAIN FEST",
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
-                      "02 FEB 2026",
-                      "PCPS"
-                  ),
-                ],
-              ),
-            ),
-          )
+
         ],
       ),
     );
