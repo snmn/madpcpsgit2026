@@ -196,14 +196,14 @@ class dashboardState extends State<dashboard> {
                             child: ListView.builder(
                                 scrollDirection: Axis.vertical,
                                 padding: EdgeInsets.zero,
-                                itemCount: 15,
+                                itemCount: data.articles!.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return  verticallistcard(
                                       size,
-                                      "PCPS DASHAIN FEST",
-                                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
-                                      "02 FEB 2026",
-                                      "PCPS"
+                                      data.articles![index].title!,
+                                      data.articles![index].urlToImage,
+                                      data.articles![index].publishedAt!.split("T")[0],
+                                      data.articles![index].source!.name!.toString()
                                   );
                                 }
                             ),
