@@ -1,3 +1,5 @@
+import 'package:demopcpsseca/controller/apicall.dart';
+import 'package:demopcpsseca/model/news.dart';
 import 'package:flutter/material.dart';
 import 'detailpage.dart';
 class dashboard extends StatefulWidget {
@@ -9,6 +11,12 @@ class dashboard extends StatefulWidget {
 
 class dashboardState extends State<dashboard> {
 
+  Future<news?>? futurenewsdata;
+  @override
+  void initState() {
+    super.initState();
+    futurenewsdata = Apicall().getapicall();
+  }
 
   horizontallistitem(size, String title,url, date){
   return GestureDetector(
@@ -92,7 +100,7 @@ class dashboardState extends State<dashboard> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.network(fit: BoxFit.cover,
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10"),
+                    url),
               ),
             ),
             Positioned(top: 45,left: 45,child: Icon(Icons.play_circle_fill_rounded,
@@ -108,7 +116,7 @@ class dashboardState extends State<dashboard> {
                 width: size.width/1.6,
                 child: Text(maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    "Happy Dashain 2026 PCPS Happy Dashain 2026 PCPS Happy Dashain 2026 PCPS Happy Dashain 2026 PCPS"),
+                    title),
               ),
               Row(
                 children: [
@@ -119,13 +127,13 @@ class dashboardState extends State<dashboard> {
                         borderRadius: BorderRadius.circular(15)
                     ),
                     padding: EdgeInsets.only(left: 15,right: 15,top: 8,bottom: 8),
-                    child: Text("PCPS NEWS",
+                    child: Text(source,
                       style: TextStyle(color: Colors.white),),
                   ),
                   SizedBox(
                     width: 25,
                   ),
-                  Text("02 feb 2026"),
+                  Text(date),
 
                 ],
               )
@@ -143,81 +151,62 @@ class dashboardState extends State<dashboard> {
       appBar: AppBar(),
       body: Column(
         children: [
-          //horizontal list
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-              horizontallistitem(
-              size,
-              "pcps dashain fest",
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10",
-                  "02 02 2026"
-              ),
 
-                horizontallistitem(
-                    size,
-                    " dashain fest",
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10",
-                    "02 02 2026"
-                ),
-                horizontallistitem(
-                    size,
-                    "pcps  fest",
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10",
-                    "02 02 2026"
-                ),
-                horizontallistitem(
-                    size,
-                    "pcps dashain ",
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10",
-                    "02 02 2026"
-                ),
-              ],
-            ),
-          ),
+          FutureBuilder(
+              future: futurenewsdata,
+              builder: (context,
+                  AsyncSnapshot<news?> snapshot){
+                switch (snapshot.connectionState){
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return CircularProgressIndicator();
+                  case ConnectionState.active:
+                  case ConnectionState.done:
+                    if(snapshot.hasData){
+                      var data = snapshot.data;
+                      return Column(
+                        children: [
+                          Container(
+                            height: size.height/4.5,
+                            child: ListView.builder(
+                                padding: EdgeInsets.zero,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: data!.articles!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return  horizontallistitem(
+                                      size,
+                                      data.articles![index].title!,
+                                      data.articles![index].urlToImage,
+                                      data.articles![index].publishedAt
+                                  );
+                                }
+                            ),
+                          ),
+                          Container(
+                            height: size.height/1.6,
+                            child: ListView.builder(
+                                padding: EdgeInsets.zero,
+                                scrollDirection: Axis.vertical,
+                                itemCount: data!.articles!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return  verticallistitem(
+                                      size,
+                                      data.articles![index].title!,
+                                      data.articles![index].urlToImage,
+                                      data.articles![index].publishedAt,
+                                      data.articles![index].source!.name
+                                  );
+                                }
+                            ),
+                          ),
+                        ],
+                      );
+                    }else{
+                      return Text("No Data");
+                    }
+                }
+              }),
 
-          //vertical list
-          Container(
-            height: size.height/1.6,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                 verticallistitem(size,
-                     "pcps dashain fest"
-                     , "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10"
-                     , "02 02 2026"
-                     , "PCPS"),
-                  verticallistitem(size,
-                      "pcps dashain fest"
-                      , "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10"
-                      , "02 02 2026"
-                      , "PCPS"),
-                  verticallistitem(size,
-                      "pcps dashain fest"
-                      , "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10"
-                      , "02 02 2026"
-                      , "PCPS"),
-                  verticallistitem(size,
-                      "pcps dashain fest"
-                      , "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10"
-                      , "02 02 2026"
-                      , "PCPS"),
-                  verticallistitem(size,
-                      "pcps dashain fest"
-                      , "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10"
-                      , "02 02 2026"
-                      , "PCPS"),
-                  verticallistitem(size,
-                      "pcps dashain fest"
-                      , "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10"
-                      , "02 02 2026"
-                      , "PCPS"),
-
-                ],
-              ),
-            ),
-          )
         ],
       ),
     );
