@@ -1,4 +1,5 @@
 import 'package:demopcpsseca/controller/apicall.dart';
+import 'package:demopcpsseca/core/static.dart';
 import 'package:demopcpsseca/model/news.dart';
 import 'package:flutter/material.dart';
 import 'detailpage.dart';
@@ -18,9 +19,15 @@ class dashboardState extends State<dashboard> {
     futurenewsdata = Apicall().getapicall();
   }
 
-  horizontallistitem(size, String title,url, date){
+  horizontallistitem(size, String title,url, date , Articles art){
+    var formatted = Static.datetimeformatter(date);
+    date = formatted;
   return GestureDetector(
     onTap: (){
+      //save the values before route to new page
+      Static.article = art;
+
+      //route to new page
       Navigator.of(context).push(
         MaterialPageRoute<void>(
           builder: (context) => detailpage(),
@@ -84,63 +91,79 @@ class dashboardState extends State<dashboard> {
   );
   }
 
-  static verticallistitem(size, String title, url, date, source){
-    return  Row(
-      children: [
-        Stack(
-          children: [
-            Container(
-              margin: EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                  color: Colors.black26,
-                  borderRadius: BorderRadius.circular(20)
-              ),
-              height: 100,
-              width: 100,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(fit: BoxFit.cover,
-                    url),
-              ),
-            ),
-            Positioned(top: 45,left: 45,child: Icon(Icons.play_circle_fill_rounded,
-              color: Colors.white,size: 40,))
-          ],
-        ),
-        Container(
-          height: 85,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  static verticallistitem(context,size, String title, url, date, source,
+      Articles art){
+    var formatted = Static.datetimeformatter(date);
+    date = formatted;
+    return  GestureDetector(
+      onTap: (){
+        //save the values before route to new page
+        Static.article = art;
+
+        //route to new page
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (context) => detailpage(),
+          ),
+        );
+      },
+      child: Row(
+        children: [
+          Stack(
             children: [
               Container(
-                width: size.width/1.6,
-                child: Text(maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    title),
+                margin: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                    color: Colors.black26,
+                    borderRadius: BorderRadius.circular(20)
+                ),
+                height: 100,
+                width: 100,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(fit: BoxFit.cover,
+                      url),
+                ),
               ),
-              Row(
-                children: [
-                  Container(
-
-                    decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(15)
-                    ),
-                    padding: EdgeInsets.only(left: 15,right: 15,top: 8,bottom: 8),
-                    child: Text(source,
-                      style: TextStyle(color: Colors.white),),
-                  ),
-                  SizedBox(
-                    width: 25,
-                  ),
-                  Text(date),
-
-                ],
-              )
+              Positioned(top: 45,left: 45,child: Icon(Icons.play_circle_fill_rounded,
+                color: Colors.white,size: 40,))
             ],
           ),
-        )
-      ],
+          Container(
+            height: 85,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: size.width/1.6,
+                  child: Text(maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      title),
+                ),
+                Row(
+                  children: [
+                    Container(
+
+                      decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(15)
+                      ),
+                      padding: EdgeInsets.only(left: 15,right: 15,top: 8,bottom: 8),
+                      child: Text(source,
+                        style: TextStyle(color: Colors.white),),
+                    ),
+                    SizedBox(
+                      width: 25,
+                    ),
+                    Text(date),
+
+                  ],
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -177,7 +200,8 @@ class dashboardState extends State<dashboard> {
                                       size,
                                       data.articles![index].title!,
                                       data.articles![index].urlToImage,
-                                      data.articles![index].publishedAt
+                                      data.articles![index].publishedAt,
+                                      data.articles![index]
                                   );
                                 }
                             ),
@@ -190,11 +214,13 @@ class dashboardState extends State<dashboard> {
                                 itemCount: data!.articles!.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return  verticallistitem(
+                                    context,
                                       size,
                                       data.articles![index].title!,
                                       data.articles![index].urlToImage,
                                       data.articles![index].publishedAt,
-                                      data.articles![index].source!.name
+                                      data.articles![index].source!.name,
+                                      data.articles![index]
                                   );
                                 }
                             ),
