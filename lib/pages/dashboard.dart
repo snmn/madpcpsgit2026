@@ -2,6 +2,7 @@ import 'package:demopcpsseca/controller/apicall.dart';
 import 'package:demopcpsseca/model/news.dart';
 import 'package:demopcpsseca/pages/detailpage.dart';
 import 'package:flutter/material.dart';
+import 'package:demopcpsseca/core/staticfile.dart';
 
 class dashboard extends StatefulWidget {
   const dashboard({super.key});
@@ -19,9 +20,13 @@ class dashboardState extends State<dashboard> {
     futurenewsdata = Apicall().getnewsdata();
   }
 
-  horizontallistitem(size, String title,url, date){
+  horizontallistitem(size, String title,url, date,Articles art ){
     return GestureDetector(
       onTap: (){
+        //yah katai static ma save garnu paryo
+        Staticfile.article = art;
+
+        //route
         Navigator.of(context).push(
           MaterialPageRoute<void>(
             builder: (context) => detailpage(),
@@ -173,7 +178,9 @@ class dashboardState extends State<dashboard> {
                                   return  horizontallistitem(size,
                                       data.articles![index].title!,
                                       data.articles![index].urlToImage,
-                                      data.articles![index].publishedAt);
+                                      data.articles![index].publishedAt,
+                                      data.articles![index]
+                                  );
                                 }
                             ),
                           ),

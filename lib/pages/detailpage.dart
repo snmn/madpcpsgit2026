@@ -1,3 +1,5 @@
+import 'package:demopcpsseca/controller/apicall.dart';
+import 'package:demopcpsseca/model/news.dart';
 import 'package:flutter/material.dart';
 import 'dashboard.dart';
 
@@ -9,6 +11,13 @@ class detailpage extends StatefulWidget {
 }
 
 class _detailpageState extends State<detailpage> {
+
+  Future<news?>? futurenewsdata;
+  @override
+  void initState() {
+    super.initState();
+    futurenewsdata = Apicall().getnewsdata();
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -86,36 +95,47 @@ class _detailpageState extends State<detailpage> {
                 Text("Related Videos",style: TextStyle(fontSize: 18),),
               ],
             ),
-            dashboardState.verticallistitem(
-                size,
-                " happy dashain pcps family skdalsjdajd",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10",
-                "02 feb 2026",
-                "PCPSNEWS"),
-            dashboardState.verticallistitem(
-                size,
-                " happy dashain pcps family skdalsjdajd",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10",
-                "02 feb 2026",
-                "PCPSNEWS"),
-            dashboardState.verticallistitem(
-                size,
-                " happy dashain pcps family skdalsjdajd",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10",
-                "02 feb 2026",
-                "PCPSNEWS"),
-            dashboardState.verticallistitem(
-                size,
-                " happy dashain pcps family skdalsjdajd",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10",
-                "02 feb 2026",
-                "PCPSNEWS"),
-            dashboardState.verticallistitem(
-                size,
-                " happy dashain pcps family skdalsjdajd",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10",
-                "02 feb 2026",
-                "PCPSNEWS"),
+
+            FutureBuilder(
+                future: futurenewsdata,
+                builder: (context, AsyncSnapshot<news?> snapshot ){
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.active:
+                    case ConnectionState.none:
+                    case ConnectionState.waiting:
+                      return CircularProgressIndicator();
+                    case ConnectionState.done:
+                      if(snapshot.hasData){
+                        var data = snapshot.data;
+                        //ui dekhaune
+                        return Column(
+                          children: [
+
+                            Container(
+                              height: size.height/1.6,
+                              child: ListView.builder(
+                                  padding: EdgeInsets.zero,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: data!.articles!.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return  dashboardState.verticallistitem(size,
+                                        data.articles![index].title!.toUpperCase(),
+                                        data.articles![index].urlToImage,
+                                        data.articles![index].publishedAt!.split("T")[0],
+                                        data.articles![index].source!.name);
+                                  }
+                              ),
+                            ),
+                          ],
+                        );
+                      }else{
+                        return Center(child: Text("No Data"),);
+                      }
+                  }
+                }),
+
+
+
           ],
         ),
       ),

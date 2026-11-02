@@ -1,3 +1,5 @@
+import 'package:demopcpsseca/model/news.dart';
+
 class Staticfile {
   //https://newsapi.org/v2/everything
   // ?q=apple&
@@ -7,6 +9,9 @@ class Staticfile {
   // &apiKey=a25a0c0b883c4f389ff5c23da0f9dfea
   static String apikey = "a25a0c0b883c4f389ff5c23da0f9dfea";
   static String baseUrl = 'newsapi.org';
+  static Articles? article;
   static String path = 'v2/everything';
+
+
 
 }
