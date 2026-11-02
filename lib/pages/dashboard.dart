@@ -14,6 +14,8 @@ class dashboard extends StatefulWidget {
 class dashboardState extends State<dashboard> {
 
   horizontallistcard(size, String title, url, date ,Articles art ){
+    var formatted = StaticFile.dateconverter(date);
+    date = formatted;
     return GestureDetector(
       onTap: (){
         //store in static variable
@@ -85,68 +87,83 @@ class dashboardState extends State<dashboard> {
     );
   }
 
-  static verticallistcard(size, title, url, date, source){
-    return  Row(
-      children: [
-        Column(
-          children: [
-            Stack(
-              children: [
-                Container(
-                  margin: EdgeInsets.all(10),
-                  height: 100,
-                  width: 100,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                  child: ClipRRect(borderRadius: BorderRadius.circular(20)
-                      ,child: Image.network(url
-                        ,fit: BoxFit.cover,)),
-                ),
-                Positioned(
-                  top: 40,
-                  left: 40,
-                  child: Icon(Icons.play_circle_fill,
-                    color: Colors.white,size: 40,),
-                )
-              ],
-            )
-          ],
-        ),
-        Container(
-          height: size.height/10,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  static verticallistcard(context,size, title, url, date, source,
+      Articles art){
+    var formatted = StaticFile.dateconverter(date);
+    date = formatted;
+    return  GestureDetector(
+      onTap: (){
+        //store in static variable
+        StaticFile.article = art;
+        //route
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (context) => detailpage(),
+          ),
+        );
+      },
+      child: Row(
+        children: [
+          Column(
             children: [
-              Container(
-                  width: size.width/1.6,
-                  child: Text(title,
-                    maxLines: 2,overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),)),
-
-              Container(
-                width: size.width/1.6,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: EdgeInsets.all(3),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 15.0,right: 15,top: 8,bottom: 8),
-                        child: Text(source,style: TextStyle(color: Colors.white),),
-                      ),
-                    ),
-                    Text(date),
-
-                  ],
-                ),
+              Stack(
+                children: [
+                  Container(
+                    margin: EdgeInsets.all(10),
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                    child: ClipRRect(borderRadius: BorderRadius.circular(20)
+                        ,child: Image.network(url
+                          ,fit: BoxFit.cover,)),
+                  ),
+                  Positioned(
+                    top: 40,
+                    left: 40,
+                    child: Icon(Icons.play_circle_fill,
+                      color: Colors.white,size: 40,),
+                  )
+                ],
               )
             ],
           ),
-        )
-      ],
+          Container(
+            height: size.height/10,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                    width: size.width/1.6,
+                    child: Text(title,
+                      maxLines: 2,overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),)),
+
+                Container(
+                  width: size.width/1.6,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: EdgeInsets.all(3),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 15.0,right: 15,top: 8,bottom: 8),
+                          child: Text(source,style: TextStyle(color: Colors.white),),
+                        ),
+                      ),
+                      Text(date.split(",")[1],),
+
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -205,11 +222,13 @@ class dashboardState extends State<dashboard> {
                                 itemCount: data.articles!.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return  verticallistcard(
+                                    context,
                                       size,
                                       data.articles![index].title!,
                                       data.articles![index].urlToImage,
                                       data.articles![index].publishedAt!.split("T")[0],
-                                      data.articles![index].source!.name!.toString()
+                                      data.articles![index].source!.name!.toString(),
+                                      data.articles![index]
                                   );
                                 }
                             ),

@@ -1,4 +1,4 @@
-package com.pcps.demoapp.demopcpsseca
+package com.example.demopcpsseca
 
 import io.flutter.embedding.android.FlutterActivity
 

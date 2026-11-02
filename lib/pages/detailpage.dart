@@ -3,7 +3,7 @@ import 'package:demopcpsseca/core/static.dart';
 import 'package:demopcpsseca/model/news.dart';
 import 'package:demopcpsseca/pages/dashboard.dart';
 import 'package:flutter/material.dart';
-
+import 'package:share_plus/share_plus.dart';
 class detailpage extends StatefulWidget {
    detailpage({super.key});
 
@@ -59,11 +59,18 @@ class _detailpageState extends State<detailpage> {
                     ),
                     Positioned(
                       right: 5,
-                      child: Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Icon(Icons.share,
-                          size: 40,
-                          color: Colors.white,),
+                      child: GestureDetector(
+                        onTap: (){
+                          SharePlus.instance.share(
+                              ShareParams(text: data.title! + " "+ data.url!)
+                          );
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Icon(Icons.share,
+                            size: 40,
+                            color: Colors.white,),
+                        ),
                       ),
                     ),
                     Container(
@@ -103,7 +110,7 @@ class _detailpageState extends State<detailpage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(data.author!,style: TextStyle(fontSize: 18),),
-                      Text(data.publishedAt!,style: TextStyle(fontSize: 18),)
+                      Text(StaticFile.dateconverter(data.publishedAt!),style: TextStyle(fontSize: 18),)
                     ],
                   ),
                 ),
@@ -158,11 +165,13 @@ class _detailpageState extends State<detailpage> {
                                   itemCount: data!.articles!.length,
                                   itemBuilder: (BuildContext context, int index) {
                                     return  dashboardState.verticallistcard(
+                                      context,
                                         size,
                                         data.articles![index].title!,
                                         data.articles![index].urlToImage,
                                         data.articles![index].publishedAt!.split("T")[0],
-                                        data.articles![index].source!.name!.toString()
+                                        data.articles![index].source!.name!.toString(),
+                                        data.articles![index]
                                     );
                                   }
                               ),
