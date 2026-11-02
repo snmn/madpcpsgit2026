@@ -1,3 +1,6 @@
+import 'package:demopcpsseca/controller/apicall.dart';
+import 'package:demopcpsseca/core/static.dart';
+import 'package:demopcpsseca/model/news.dart';
 import 'package:demopcpsseca/pages/dashboard.dart';
 import 'package:flutter/material.dart';
 
@@ -9,9 +12,18 @@ class detailpage extends StatefulWidget {
 }
 
 class _detailpageState extends State<detailpage> {
+
+  Future<news?>? futurenewsdata;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    futurenewsdata = Apicall.getnewsdata();
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    var data = StaticFile.article;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -27,7 +39,7 @@ class _detailpageState extends State<detailpage> {
                       width: size.width,
                       child: Image.network(
                           fit: BoxFit.cover,
-                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10"),
+                          data!.urlToImage!),
                     ),
                     Container(
                       height: size.height/4,
@@ -72,8 +84,7 @@ class _detailpageState extends State<detailpage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: Text("Happy dashain Everyone "
-                      "sasdasdasddasdad gdgfd".toUpperCase()
+                  child: Text( data.title!.toUpperCase()
                   ,style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -86,15 +97,14 @@ class _detailpageState extends State<detailpage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Author Name",style: TextStyle(fontSize: 18),),
-                      Text("Date 2026 ",style: TextStyle(fontSize: 18),)
+                      Text(data.author!,style: TextStyle(fontSize: 18),),
+                      Text(data.publishedAt!,style: TextStyle(fontSize: 18),)
                     ],
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: Text("Happy dashain Everyone "
-                      "sasdasdasddasdad gdgfd"
+                  child: Text(data.description!
                     ,style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.normal,
@@ -117,23 +127,49 @@ class _detailpageState extends State<detailpage> {
                 ),
               ],
             ),
-            dashboardState.verticallistcard(size,
-                "PCPS DASHAIN FEST",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
-                "02 FEB 2026",
-                "PCPS"),
-            dashboardState.verticallistcard(size,
-                "Happy Dashain",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
-                "date ", "pcps"),
-            dashboardState.verticallistcard(size,
-                "Happy Dashain",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
-                "date ", "pcps"),
-            dashboardState.verticallistcard(size,
-                "Happy Dashain",
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjZEcP2NkJQgEzAbBaG49jkD5TOG9hI9VALB1a_-vXlQ&s=10",
-                "date ", "pcps"),
+
+            FutureBuilder(
+                future: futurenewsdata,
+                builder: (context, AsyncSnapshot<news?> snapshot)
+                {
+                  switch (snapshot.connectionState){
+                    case ConnectionState.none:
+                    case ConnectionState.waiting:
+                      return Center(child: CircularProgressIndicator());
+                    case ConnectionState.active:
+                    case ConnectionState.done:
+                      if(snapshot.hasData){
+                        //show ui
+                        var data = snapshot.data;
+                        return Column(
+                          children: [
+
+                            //vertical list
+                            Container(
+                              height: size.height/1.75,
+                              child: ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  padding: EdgeInsets.zero,
+                                  itemCount: data!.articles!.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return  dashboardState.verticallistcard(
+                                        size,
+                                        data.articles![index].title!,
+                                        data.articles![index].urlToImage,
+                                        data.articles![index].publishedAt!.split("T")[0],
+                                        data.articles![index].source!.name!.toString()
+                                    );
+                                  }
+                              ),
+                            ),
+                          ],
+                        );
+                      }else{
+                        return Center(child:
+                        Text("No Data Available"),);
+                      }
+                  }
+                }),
           ],
         ),
       ),

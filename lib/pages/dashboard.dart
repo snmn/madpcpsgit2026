@@ -1,4 +1,5 @@
 import 'package:demopcpsseca/controller/apicall.dart';
+import 'package:demopcpsseca/core/static.dart';
 import 'package:demopcpsseca/model/news.dart';
 import 'package:demopcpsseca/pages/detailpage.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +13,12 @@ class dashboard extends StatefulWidget {
 
 class dashboardState extends State<dashboard> {
 
-  horizontallistcard(size, String title, url, date ){
+  horizontallistcard(size, String title, url, date ,Articles art ){
     return GestureDetector(
       onTap: (){
+        //store in static variable
+        StaticFile.article = art;
+        //route
         Navigator.of(context).push(
           MaterialPageRoute<void>(
             builder: (context) => detailpage(),
@@ -186,7 +190,9 @@ class dashboardState extends State<dashboard> {
                                       size,
                                       data.articles![index].title!,
                                       data.articles![index].urlToImage,
-                                      data.articles![index].publishedAt);
+                                      data.articles![index].publishedAt,
+                                      data.articles![index]
+                                  );
                                 }
                             ),
                           ),
