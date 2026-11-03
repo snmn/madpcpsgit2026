@@ -1,3 +1,4 @@
+import 'package:demopcpsseca/chatapp/pages/login.dart';
 import 'package:demopcpsseca/pages/dashboard.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: dashboard()
+      home: loginPage()
     );
   }
 }

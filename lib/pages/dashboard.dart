@@ -79,7 +79,7 @@ class dashboardState extends State<dashboard> {
   }
   static verticalllistitem(context,size,String title, url,date,source, Articles? art){
     var formatteddate = Static.datetimeconverter(date);
-    date = formatteddate;
+    date = formatteddate.split(",")[1];
     return  GestureDetector(
       onTap: (){
         //katai save garnu paryo
