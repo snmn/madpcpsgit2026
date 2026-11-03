@@ -21,6 +21,10 @@ class dashboardState extends State<dashboard> {
   }
 
   horizontallistitem(size, String title,url, date,Articles art ){
+
+    var formatted =  Staticfile.dateconverter(date);
+    date = formatted;
+
     return GestureDetector(
       onTap: (){
         //yah katai static ma save garnu paryo
@@ -83,66 +87,81 @@ class dashboardState extends State<dashboard> {
     );
   }
 
-  static verticallistitem(size, String title, url, date, source){
-    return Row(
-      children: [
-        Stack(
-          children: [
-            Container(
-              height: 120,
-              width: 120,
-              margin: EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(20)
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(fit: BoxFit.cover,
-                    url),
-              ),
-            ),
-            Container(
-              height: 120,
-              width: 120,
-              margin: EdgeInsets.all(15),
-              child: Center(
-                child: Icon(Icons.play_circle_fill_rounded,
-                  size: 50,color: Colors.white,),
-              ),
-            )
-          ],
-        ),
-        Container(
-          height: 90,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+  static verticallistitem(context,size, String title, url,
+      date, source, Articles art){
+    var formatted =  Staticfile.dateconverter(date);
+    date = formatted.split(",")[1];
+    return GestureDetector(
+      onTap: (){
+        //yah katai static ma save garnu paryo
+        Staticfile.article = art;
+        //route
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (context) => detailpage(),
+          ),
+        );
+      },
+      child: Row(
+        children: [
+          Stack(
             children: [
               Container(
-                width: size.width/2,
-                child: Text(title
-                  ,maxLines: 2,overflow: TextOverflow.ellipsis,),
+                height: 120,
+                width: 120,
+                margin: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.circular(20)
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(fit: BoxFit.cover,
+                      url),
+                ),
               ),
-              Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.only(left: 10,right: 10,
-                        top: 8,bottom: 8),
-                    decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(20)
-                    ),
-                    child: Text(source,style: TextStyle(color: Colors.white),),
-                  ),
-                  SizedBox(width: 15,),
-                  Text(date,)
-                ],
+              Container(
+                height: 120,
+                width: 120,
+                margin: EdgeInsets.all(15),
+                child: Center(
+                  child: Icon(Icons.play_circle_fill_rounded,
+                    size: 50,color: Colors.white,),
+                ),
               )
             ],
           ),
-        )
-      ],
+          Container(
+            height: 90,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: size.width/2,
+                  child: Text(title
+                    ,maxLines: 2,overflow: TextOverflow.ellipsis,),
+                ),
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(left: 10,right: 10,
+                          top: 8,bottom: 8),
+                      decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(20)
+                      ),
+                      child: Text(source,style: TextStyle(color: Colors.white),),
+                    ),
+                    SizedBox(width: 15,),
+                    Text(date,)
+                  ],
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -191,11 +210,12 @@ class dashboardState extends State<dashboard> {
                                 scrollDirection: Axis.vertical,
                                 itemCount: data!.articles!.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return  verticallistitem(size,
+                                  return  verticallistitem(context,size,
                                       data.articles![index].title!.toUpperCase(),
                                       data.articles![index].urlToImage,
                                       data.articles![index].publishedAt!.split("T")[0],
-                                      data.articles![index].source!.name);
+                                      data.articles![index].source!.name,
+                                      data.articles![index]);
                                 }
                             ),
                           ),

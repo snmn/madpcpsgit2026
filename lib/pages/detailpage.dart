@@ -1,4 +1,5 @@
 import 'package:demopcpsseca/controller/apicall.dart';
+import 'package:demopcpsseca/core/staticfile.dart';
 import 'package:demopcpsseca/model/news.dart';
 import 'package:flutter/material.dart';
 import 'dashboard.dart';
@@ -21,6 +22,7 @@ class _detailpageState extends State<detailpage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    var data = Staticfile.article;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -32,7 +34,7 @@ class _detailpageState extends State<detailpage> {
                   height: size.height/4,
                   width: size.width,
                   child: Image.network(fit: BoxFit.cover,
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYNBJaFUb3pMu0XkkBdNkmsaBuZoYsR78LNMLGEdLPig&s=10"
+                  data!.urlToImage!
 
                 )
                 ),
@@ -41,9 +43,14 @@ class _detailpageState extends State<detailpage> {
                     width: size.width,
                     color: Colors.black54,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(Icons.arrow_back,color: Colors.white,size: 40,),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.pop(context);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.arrow_back,color: Colors.white,size: 40,),
+                  ),
                 ),
                 Positioned(
                   right: 10,
@@ -68,7 +75,7 @@ class _detailpageState extends State<detailpage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Happy Dashain Everyone Happy Dashain Everyone Happy Dashain Everyone Happy Dashain Everyone"
+                  Text(data.title!
                   ,style: TextStyle(fontSize: 20,
                         fontWeight: FontWeight.bold),maxLines: 2,
                   overflow: TextOverflow.ellipsis,),
@@ -76,12 +83,12 @@ class _detailpageState extends State<detailpage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Author Name"),
-                      Text("02 02 2026 ")
+                      Text(data.author!),
+                      Text(Staticfile.dateconverter(data.publishedAt!))
                     ],
                   ),
                   SizedBox(height: 10,),
-                  Text("Happy Dashain Everyone Happy Dashain Everyone Happy Dashain Everyone Happy Dashain Everyone Happy Dashain Everyone Happy Dashain Everyone Happy Dashain Everyone Happy Dashain Everyone Happy Dashain Everyone Happy Dashain Everyone Happy Dashain Everyone")
+                  Text(data.description!)
                 ],
               ),
             ),
@@ -118,11 +125,13 @@ class _detailpageState extends State<detailpage> {
                                   scrollDirection: Axis.vertical,
                                   itemCount: data!.articles!.length,
                                   itemBuilder: (BuildContext context, int index) {
-                                    return  dashboardState.verticallistitem(size,
+                                    return  dashboardState.verticallistitem(
+                                        context,size,
                                         data.articles![index].title!.toUpperCase(),
                                         data.articles![index].urlToImage,
                                         data.articles![index].publishedAt!.split("T")[0],
-                                        data.articles![index].source!.name);
+                                        data.articles![index].source!.name,
+                                        data.articles![index]);
                                   }
                               ),
                             ),

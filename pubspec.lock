@@ -160,6 +160,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  smart_date_formatter:
+    dependency: "direct main"
+    description:
+      name: smart_date_formatter
+      sha256: "76fedf45df36a4176eecfb840ac7faf5af46d69bf58a9584981c287e832f1a74"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.6.1"
   source_span:
     dependency: transitive
     description:
