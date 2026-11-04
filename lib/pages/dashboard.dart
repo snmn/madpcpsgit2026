@@ -94,7 +94,7 @@ class dashboardState extends State<dashboard> {
   static verticallistitem(context,size, String title, url, date, source,
       Articles art){
     var formatted = Static.datetimeformatter(date);
-    date = formatted;
+    date = formatted.split(",")[1];
     return  GestureDetector(
       onTap: (){
         //save the values before route to new page

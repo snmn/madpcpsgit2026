@@ -2,6 +2,7 @@ import 'package:demopcpsseca/controller/apicall.dart';
 import 'package:demopcpsseca/core/static.dart';
 import 'package:demopcpsseca/model/news.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'dashboard.dart';
 import 'package:smart_date_formatter/smart_date_formatter.dart';
 
@@ -56,10 +57,18 @@ class _detailpageState extends State<detailpage> {
                ),
                Positioned(
                  right: 0,
-                 child: Padding(
-                   padding: const EdgeInsets.all(15.0),
-                   child: Icon(Icons.share,
-                     color: Colors.white,size: 30,),
+                 child: GestureDetector(
+                   onTap: (){
+                     SharePlus.instance.share(
+                         ShareParams(text: Static.article!.title!
+                             + " "+ Static.article!.url! )
+                     );
+                   },
+                   child: Padding(
+                     padding: const EdgeInsets.all(15.0),
+                     child: Icon(Icons.share,
+                       color: Colors.white,size: 30,),
+                   ),
                  ),
                ),
                Container(
