@@ -7,5 +7,24 @@
   },
   "database": {
     "rules": "database.rules.json"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "chatappsecc",
+          "appId": "1:503792237795:android:cb0364b7c0ea2a695599d6",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "chatappsecc",
+          "configurations": {
+            "android": "1:503792237795:android:cb0364b7c0ea2a695599d6"
+          }
+        }
+      }
+    }
   }
 }
