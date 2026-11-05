@@ -2,6 +2,7 @@ import 'package:demopcpsseca/controller/apicall.dart';
 import 'package:demopcpsseca/core/staticfile.dart';
 import 'package:demopcpsseca/model/news.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'dashboard.dart';
 
 class detailpage extends StatefulWidget {
@@ -54,9 +55,17 @@ class _detailpageState extends State<detailpage> {
                 ),
                 Positioned(
                   right: 10,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(Icons.share,color: Colors.white,size: 40,),
+                  child: GestureDetector(
+                    onTap: (){
+                      SharePlus.instance.share(
+                          ShareParams(text: data.title! + " "
+                              + data.url!)
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(Icons.share,color: Colors.white,size: 40,),
+                    ),
                   ),
                 ),
                 Container(
