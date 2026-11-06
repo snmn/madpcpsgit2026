@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:demopcpsseca/chatapp/pages/registerPage.dart';
 import 'package:demopcpsseca/pages/dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -200,6 +201,17 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
               ),
+            ),
+            TextButton(
+              key: const Key('login-create-account'),
+              onPressed: _isSigningIn
+                  ? null
+                  : () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const RegisterPage(),
+                        ),
+                      ),
+              child: const Text('Create account'),
             ),
           ],
         ),
