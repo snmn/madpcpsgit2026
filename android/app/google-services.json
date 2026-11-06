@@ -1,0 +1,62 @@
+{
+  "info": [
+    {
+      "client": {
+        "mobilesdk_app_id": "<YOUR_ANDROID_APP_ID>",
+        "client_info": {
+          "mobilesdk_app_id": "<YOUR_ANDROID_APP_ID>",
+          "android_client_info": {
+            "package_name": "com.example.demopcpsseca"
+          }
+        },
+        "api_key": [
+          {
+            "current_key": "<YOUR_API_KEY>"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": []
+          },
+          "analytics_service": {
+            "status": 1
+          },
+          "ads_service": {
+            "status": 2
+          }
+        }
+      },
+      "admob_app_id": "<YOUR_ADMOB_APP_ID>",
+      "client_url": "<YOUR_CLIENT_URL>"
+    }
+  ],
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "<YOUR_ANDROID_APP_ID>",
+        "android_client_info": {
+          "package_name": "com.example.demopcpsseca"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "<YOUR_API_KEY>"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

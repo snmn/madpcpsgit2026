@@ -1,6 +1,7 @@
 import 'package:demopcpsseca/controller/apicall.dart';
 import 'package:demopcpsseca/core/static.dart';
 import 'package:demopcpsseca/model/news.dart';
+import 'package:demopcpsseca/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'detailpage.dart';
 class dashboard extends StatefulWidget {
@@ -13,6 +14,12 @@ class dashboard extends StatefulWidget {
 class dashboardState extends State<dashboard> {
 
   Future<news?>? futurenewsdata;
+  final AuthService _auth = AuthService();
+
+  Future<void> _signOut() async {
+    await _auth.signOut();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -171,7 +178,16 @@ class dashboardState extends State<dashboard> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return  Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text("Dashboard"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _signOut,
+            tooltip: "Sign out",
+          ),
+        ],
+      ),
       body: Column(
         children: [
 
