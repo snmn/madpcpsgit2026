@@ -1,3 +1,4 @@
+import 'package:demopcpsseca/chat/pages/chat.dart';
 import 'package:demopcpsseca/controller/apicall.dart';
 import 'package:demopcpsseca/core/static.dart';
 import 'package:demopcpsseca/model/news.dart';
@@ -178,9 +179,20 @@ class dashboardState extends State<dashboard> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(),
       body: Column(
         children: [
+          SizedBox(height: 30,),
+          GestureDetector(
+              onTap: (){
+
+                //route
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => chat(),
+                  ),
+                );
+              },
+              child: Icon(Icons.chat,color: Colors.black,)),
           FutureBuilder(
               future: futurenewsdata,
               builder: (context, AsyncSnapshot<news?> snapshot)

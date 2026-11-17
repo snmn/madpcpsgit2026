@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "386269533471",
+    "firebase_url": "https://chatappsecb-6525f-default-rtdb.firebaseio.com",
+    "project_id": "chatappsecb-6525f",
+    "storage_bucket": "chatappsecb-6525f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:386269533471:android:af8d053aff488f42ae8c2a",
+        "android_client_info": {
+          "package_name": "com.example.demopcpsseca"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHJEjduEO8vpaXBel72uTMn6kpf6o_xUo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
