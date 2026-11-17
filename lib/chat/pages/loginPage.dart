@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class loginPage extends StatefulWidget {
@@ -170,12 +171,288 @@ class _loginPageState extends State<loginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("forget password? "),
-                Text("Register Now")
+                const Text("forget password? "),
+                Text.rich(
+                  TextSpan(
+                    text: "Register Now",
+                    style: const TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const SignupPage(),
+                          ),
+                        );
+                      },
+                  ),
+                ),
               ],
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
+
+  @override
+  State<SignupPage> createState() => _SignupPageState();
+}
+
+class _SignupPageState extends State<SignupPage> {
+  final _name = TextEditingController();
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+  final _confirmPassword = TextEditingController();
+  bool _loading = false;
+  bool _obscurePassword = true;
+  bool _obscureConfirm = true;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _email.dispose();
+    _password.dispose();
+    _confirmPassword.dispose();
+    super.dispose();
+  }
+
+  Future<void> _signUp() async {
+    final name = _name.text.trim();
+    final email = _email.text.trim();
+    final password = _password.text;
+    final confirmPassword = _confirmPassword.text;
+    final emailPattern = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+
+    if (name.isEmpty) {
+      _showMessage('Enter your name.');
+      return;
+    }
+    if (!emailPattern.hasMatch(email)) {
+      _showMessage('Enter a valid email address.');
+      return;
+    }
+    if (password.length < 6) {
+      _showMessage('Password must be at least 6 characters.');
+      return;
+    }
+    if (password != confirmPassword) {
+      _showMessage('Passwords do not match.');
+      return;
+    }
+
+    setState(() => _loading = true);
+    try {
+      final credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      await credential.user?.updateDisplayName(name);
+      await credential.user?.reload();
+      // authStateChanges in MyApp routes to the dashboard.
+      if (!mounted) return;
+      Navigator.of(context).pop();
+    } on FirebaseAuthException catch (error) {
+      if (!mounted) return;
+      final message = switch (error.code) {
+        'email-already-in-use' => 'This email is already registered.',
+        'invalid-email' => 'Enter a valid email address.',
+        'weak-password' => 'Choose a stronger password.',
+        'operation-not-allowed' => 'Email sign-up is disabled.',
+        'network-request-failed' =>
+          'Network error. Check your connection and try again.',
+        _ => 'Unable to create account. Please try again.',
+      };
+      _showMessage(message);
+    } catch (_) {
+      if (!mounted) return;
+      _showMessage('Unable to create account. Please try again.');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              height: size.height / 5,
+              width: size.width,
+              alignment: Alignment.center,
+              child: Text(
+                "eGUFF",
+                style: TextStyle(
+                  color: Color(0xffCD86E4),
+                  fontSize: 60,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            _field(
+              size: size,
+              label: " Name: ",
+              controller: _name,
+              hint: "Your name",
+              keyboardType: TextInputType.name,
+              autofillHints: const [AutofillHints.name],
+              obscureText: false,
+            ),
+            _field(
+              size: size,
+              label: " Email: ",
+              controller: _email,
+              hint: "abc@gmail.com",
+              keyboardType: TextInputType.emailAddress,
+              autofillHints: const [AutofillHints.email],
+              obscureText: false,
+            ),
+            _field(
+              size: size,
+              label: " Password: ",
+              controller: _password,
+              hint: "keep it a secret",
+              keyboardType: TextInputType.visiblePassword,
+              autofillHints: const [AutofillHints.newPassword],
+              obscureText: _obscurePassword,
+              suffix: IconButton(
+                icon: Icon(
+                  _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                ),
+                onPressed: () =>
+                    setState(() => _obscurePassword = !_obscurePassword),
+              ),
+            ),
+            _field(
+              size: size,
+              label: " Confirm: ",
+              controller: _confirmPassword,
+              hint: "re-enter password",
+              keyboardType: TextInputType.visiblePassword,
+              autofillHints: const [AutofillHints.newPassword],
+              obscureText: _obscureConfirm,
+              suffix: IconButton(
+                icon: Icon(
+                  _obscureConfirm ? Icons.visibility : Icons.visibility_off,
+                ),
+                onPressed: () =>
+                    setState(() => _obscureConfirm = !_obscureConfirm),
+              ),
+            ),
+            GestureDetector(
+              onTap: _loading ? null : _signUp,
+              child: Container(
+                margin: EdgeInsets.all(10),
+                padding: EdgeInsets.only(
+                  left: 20,
+                  right: 20,
+                  top: 12,
+                  bottom: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: _loading
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(
+                        "Sign Up".toUpperCase(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("already have an account? "),
+                Text.rich(
+                  TextSpan(
+                    text: "Login",
+                    style: const TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => Navigator.of(context).pop(),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: size.height / 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _field({
+    required Size size,
+    required String label,
+    required TextEditingController controller,
+    required String hint,
+    required TextInputType keyboardType,
+    required List<String> autofillHints,
+    required bool obscureText,
+    Widget? suffix,
+  }) {
+    return Container(
+      width: size.width / 1.1,
+      padding: EdgeInsets.all(8),
+      margin: EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        color: Color(0xffEAEDF6),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Text(label),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              keyboardType: keyboardType,
+              autofillHints: autofillHints,
+              obscureText: obscureText,
+              decoration: InputDecoration(
+                hint: Text(hint),
+                suffixIcon: suffix,
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

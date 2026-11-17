@@ -3,6 +3,7 @@ import 'package:demopcpsseca/controller/apicall.dart';
 import 'package:demopcpsseca/core/static.dart';
 import 'package:demopcpsseca/model/news.dart';
 import 'package:demopcpsseca/pages/detailpage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class dashboard extends StatefulWidget {
@@ -175,24 +176,39 @@ class dashboardState extends State<dashboard> {
     super.initState();
     futurenewsdata = Apicall.getnewsdata();
   }
+  Future<void> _logout() async {
+    await FirebaseAuth.instance.signOut();
+    // authStateChanges in MyApp routes back to the login page.
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 30,),
-          GestureDetector(
-              onTap: (){
-
-                //route
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) => chat(),
-                  ),
-                );
-              },
-              child: Icon(Icons.chat,color: Colors.black,)),
+          SizedBox(height: 50,),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: (){
+                    //route
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (context) => chat(),
+                      ),
+                    );
+                  },
+                  child: Icon(Icons.chat,color: Colors.black,)),
+                GestureDetector(
+                  onTap: _logout,
+                  child: Icon(Icons.logout,color: Colors.black,)),
+              ],
+            ),
+          ),
           FutureBuilder(
               future: futurenewsdata,
               builder: (context, AsyncSnapshot<news?> snapshot)
