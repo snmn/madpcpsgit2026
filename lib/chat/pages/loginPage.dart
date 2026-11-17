@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -248,17 +249,43 @@ class _SignupPageState extends State<SignupPage> {
     }
 
     setState(() => _loading = true);
+    UserCredential? credential;
     try {
-      final credential = await FirebaseAuth.instance
+      credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       await credential.user?.updateDisplayName(name);
       await credential.user?.reload();
+
+      // Auth creates the account first; Firestore creates the collection only
+      // after this document write succeeds.
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(credential.user!.uid)
+          .set({
+        'name': name,
+        'email': email,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
       // authStateChanges in MyApp routes to the dashboard.
       if (!mounted) return;
       Navigator.of(context).pop();
+    } on FirebaseException catch (error) {
+      if (!mounted) return;
+      final detail = switch (error.code) {
+        'permission-denied' =>
+          'Firestore denied the profile write. Check the deployed Firestore rules.',
+        'unavailable' =>
+          'Firestore is unavailable. Check your connection and try again.',
+        'not-found' =>
+          'Firestore is not set up for this Firebase project.',
+        _ => 'Firestore error (${error.code}): ${error.message ?? 'Unknown error.'}',
+      };
+      _showMessage(credential?.user != null
+          ? 'Account created, but the user profile was not saved. $detail'
+          : detail);
     } on FirebaseAuthException catch (error) {
       if (!mounted) return;
       final message = switch (error.code) {
@@ -271,9 +298,11 @@ class _SignupPageState extends State<SignupPage> {
         _ => 'Unable to create account. Please try again.',
       };
       _showMessage(message);
-    } catch (_) {
+    } catch (error) {
       if (!mounted) return;
-      _showMessage('Unable to create account. Please try again.');
+      _showMessage(credential?.user != null
+          ? 'Account created, but profile setup failed: $error'
+          : 'Unable to create account: $error');
     } finally {
       if (mounted) setState(() => _loading = false);
     }
