@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:demopcpsseca/chatapp/firestore_chat_service.dart';
 import 'package:demopcpsseca/pages/dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,7 @@ class _RegisterPageState extends State<RegisterPage> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
+      await FirestoreChatService().upsertCurrentUser();
 
       if (!mounted) return;
       unawaited(

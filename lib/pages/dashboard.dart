@@ -1,4 +1,5 @@
 import 'package:demopcpsseca/controller/apicall.dart';
+import 'package:demopcpsseca/chatapp/pages/conversation.dart';
 import 'package:demopcpsseca/model/news.dart';
 import 'package:demopcpsseca/pages/detailpage.dart';
 import 'package:flutter/material.dart';
@@ -170,6 +171,17 @@ class dashboardState extends State<dashboard> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(),
+      floatingActionButton: FloatingActionButton(
+        tooltip: 'Chats',
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => const ConversationPage(),
+            ),
+          );
+        },
+        child: const Icon(Icons.chat_bubble_outline),
+      ),
       body: Column(
         children: [
 
