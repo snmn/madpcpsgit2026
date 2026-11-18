@@ -1,4 +1,4 @@
-import 'package:demopcpsseca/chatapp/pages/loginPage.dart';
+import 'package:demopcpsseca/chatapp/pages/login_page.dart';
 import 'package:demopcpsseca/firebase_options.dart';
 import 'package:demopcpsseca/pages/dashboard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
             );
           }
           final user = snapshot.data;
-          return user == null ? const loginPage() : const dashboard();
+          return user == null ? const LoginPage() : const dashboard();
         },
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:demopcpsseca/controller/apicall.dart';
+import 'package:demopcpsseca/chatapp/pages/conversation.dart';
 import 'package:demopcpsseca/core/static.dart';
 import 'package:demopcpsseca/model/news.dart';
 import 'package:demopcpsseca/services/auth_service.dart';
@@ -187,6 +188,17 @@ class dashboardState extends State<dashboard> {
             tooltip: "Sign out",
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (context) => const ConversationPage(),
+            ),
+          );
+        },
+        tooltip: "Messages",
+        child: const Icon(Icons.chat),
       ),
       body: Column(
         children: [

@@ -1,25 +1,85 @@
 import 'package:demopcpsseca/pages/dashboard.dart';
 import 'package:demopcpsseca/services/auth_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class loginPage extends StatefulWidget {
-  const loginPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
   @override
-  State<loginPage> createState() => _loginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _loginPageState extends State<loginPage> {
+class _LoginPageState extends State<LoginPage> {
   final AuthService _auth = AuthService();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
+  bool _showSignUp = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _signUp() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
+    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please fill in all fields.")),
+      );
+      return;
+    }
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Passwords do not match.")),
+      );
+      return;
+    }
+    if (password.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Password must be at least 6 characters.")),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    try {
+      final credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final user = credential.user;
+      if (user != null) {
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'email': email,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute<void>(builder: (context) => const dashboard()),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Unable to create account. Please try again."),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   Future<void> _signIn() async {
@@ -120,6 +180,24 @@ class _loginPageState extends State<loginPage> {
                     )),
               ),
             ),
+            if (_showSignUp)
+              Container(
+                margin: const EdgeInsets.only(top: 5),
+                padding: const EdgeInsets.only(left: 20),
+                decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                width: size.width / 1.2,
+                child: TextField(
+                  controller: _confirmPasswordController,
+                  obscureText: _obscurePassword,
+                  decoration: const InputDecoration(
+                    hintText: "Confirm your password",
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
 
             if (_isLoading)
               const Padding(
@@ -128,7 +206,11 @@ class _loginPageState extends State<loginPage> {
               ),
 
             GestureDetector(
-              onTap: _isLoading ? null : _signIn,
+              onTap: _isLoading
+                  ? null
+                  : _showSignUp
+                      ? _signUp
+                      : _signIn,
               child: Container(
                 margin: EdgeInsets.all(10),
                 decoration: BoxDecoration(
@@ -138,7 +220,10 @@ class _loginPageState extends State<loginPage> {
                 padding: EdgeInsets.only(left: 15, right: 15, top: 8,
                 bottom: 8),
                 child:
-                Text(_isLoading ? " Loading " : " Login ".toUpperCase(),
+                Text(
+                  _isLoading
+                      ? " Loading "
+                      : (_showSignUp ? " Sign up " : " Login ").toUpperCase(),
                 style: TextStyle(color: Colors.white),),
               ),
             ),
@@ -149,8 +234,13 @@ class _loginPageState extends State<loginPage> {
               child: const Text("Forgot password?"),
             ),
             TextButton(
-              onPressed: () {},
-              child: const Text("Sign up"),
+              onPressed: _isLoading
+                  ? null
+                  : () => setState(() {
+                        _showSignUp = !_showSignUp;
+                        _confirmPasswordController.clear();
+                      }),
+              child: Text(_showSignUp ? "Back to login" : "Sign up"),
             ),
 
           ],
