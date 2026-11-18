@@ -1,6 +1,7 @@
 import 'package:demopcpsseca/chat/pages/chat.dart';
 import 'package:demopcpsseca/controller/apicall.dart';
 import 'package:demopcpsseca/core/static.dart';
+import 'package:demopcpsseca/maps/pages/mappage.dart';
 import 'package:demopcpsseca/model/news.dart';
 import 'package:demopcpsseca/pages/detailpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -204,11 +205,22 @@ class dashboardState extends State<dashboard> {
                   },
                   child: Icon(Icons.chat,color: Colors.black,)),
                 GestureDetector(
+                    onTap: (){
+                      //route
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (context) => MapSample(),
+                        ),
+                      );
+                    },
+                    child: Icon(Icons.map_outlined,color: Colors.black,)),
+                GestureDetector(
                   onTap: _logout,
                   child: Icon(Icons.logout,color: Colors.black,)),
               ],
             ),
           ),
+
           FutureBuilder(
               future: futurenewsdata,
               builder: (context, AsyncSnapshot<news?> snapshot)
