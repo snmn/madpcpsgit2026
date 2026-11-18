@@ -1,6 +1,7 @@
 import 'package:demopcpsseca/controller/apicall.dart';
 import 'package:demopcpsseca/chatapp/pages/conversation.dart';
 import 'package:demopcpsseca/core/static.dart';
+import 'package:demopcpsseca/maps/page/maps.dart';
 import 'package:demopcpsseca/model/news.dart';
 import 'package:demopcpsseca/services/auth_service.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,13 @@ class dashboardState extends State<dashboard> {
 
   Future<void> _signOut() async {
     await _auth.signOut();
+  }
+  _gotomaps(){
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => MapSample(),
+      ),
+    );
   }
 
   @override
@@ -182,6 +190,11 @@ class dashboardState extends State<dashboard> {
       appBar: AppBar(
         title: const Text("Dashboard"),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.map),
+            onPressed: _gotomaps,
+            tooltip: "maps",
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: _signOut,
