@@ -3,6 +3,9 @@
         android:label="demopcpsseca"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDmMzGmGbjESph5OSbXVTktwB3OkVd6W18" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
