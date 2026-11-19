@@ -10,14 +10,19 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  final _displayNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   bool _isSigningIn = false;
+  bool _isSigningUp = false;
 
   @override
   void dispose() {
+    _displayNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -44,6 +49,42 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Future<void> _signUp() async {
+    if (_isSigningIn || !_formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() => _isSigningIn = true);
+    try {
+      final credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: _emailController.text.trim(),
+            password: _passwordController.text,
+          );
+      await credential.user?.updateDisplayName(
+        _displayNameController.text.trim(),
+      );
+    } on FirebaseAuthException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_messageForAuthError(error.code))),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isSigningIn = false);
+      }
+    }
+  }
+
+  void _toggleAuthMode() {
+    setState(() {
+      _isSigningUp = !_isSigningUp;
+      _formKey.currentState?.reset();
+      _passwordController.clear();
+      _confirmPasswordController.clear();
+    });
+  }
+
   String _messageForAuthError(String code) {
     switch (code) {
       case 'invalid-credential':
@@ -60,9 +101,22 @@ class _LoginPageState extends State<LoginPage> {
         return 'Unable to connect. Check your internet connection and try again.';
       case 'operation-not-allowed':
         return 'Email and password sign-in is not enabled for this app.';
+      case 'email-already-in-use':
+        return 'An account already exists for this email.';
+      case 'weak-password':
+        return 'Choose a stronger password with at least 6 characters.';
       default:
-        return 'Unable to sign in. Please try again.';
+        return _isSigningUp
+            ? 'Unable to create your account. Please try again.'
+            : 'Unable to sign in. Please try again.';
     }
+  }
+
+  String? _validateDisplayName(String? value) {
+    if (_isSigningUp && (value == null || value.trim().isEmpty)) {
+      return 'Enter your name.';
+    }
+    return null;
   }
 
   String? _validateEmail(String? value) {
@@ -76,6 +130,19 @@ class _LoginPageState extends State<LoginPage> {
 
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) return 'Enter your password.';
+    if (_isSigningUp && value.length < 6) {
+      return 'Use at least 6 characters.';
+    }
+    return null;
+  }
+
+  String? _validateConfirmPassword(String? value) {
+    if (_isSigningUp && (value == null || value.isEmpty)) {
+      return 'Confirm your password.';
+    }
+    if (_isSigningUp && value != _passwordController.text) {
+      return 'Passwords do not match.';
+    }
     return null;
   }
 
@@ -120,6 +187,21 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
+                if (_isSigningUp)
+                  _inputContainer(
+                    width: size.width / 1.1,
+                    label: 'Name',
+                    child: TextFormField(
+                      controller: _displayNameController,
+                      textCapitalization: TextCapitalization.words,
+                      textInputAction: TextInputAction.next,
+                      validator: _validateDisplayName,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Enter your name',
+                      ),
+                    ),
+                  ),
                 _inputContainer(
                   width: size.width / 1.1,
                   label: 'Email',
@@ -141,20 +223,40 @@ class _LoginPageState extends State<LoginPage> {
                   child: TextFormField(
                     controller: _passwordController,
                     obscureText: true,
-                    textInputAction: TextInputAction.done,
+                    textInputAction: _isSigningUp
+                        ? TextInputAction.next
+                        : TextInputAction.done,
                     autofillHints: const [AutofillHints.password],
                     validator: _validatePassword,
-                    onFieldSubmitted: (_) => _signIn(),
+                    onFieldSubmitted: _isSigningUp ? null : (_) => _signIn(),
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Enter your password here',
                     ),
                   ),
                 ),
+                if (_isSigningUp)
+                  _inputContainer(
+                    width: size.width / 1.1,
+                    label: 'Confirm',
+                    child: TextFormField(
+                      controller: _confirmPasswordController,
+                      obscureText: true,
+                      textInputAction: TextInputAction.done,
+                      validator: _validateConfirmPassword,
+                      onFieldSubmitted: (_) => _signUp(),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Confirm your password',
+                      ),
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 16),
                   child: ElevatedButton(
-                    onPressed: _isSigningIn ? null : _signIn,
+                    onPressed: _isSigningIn
+                        ? null
+                        : (_isSigningUp ? _signUp : _signIn),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       foregroundColor: Colors.white,
@@ -172,7 +274,15 @@ class _LoginPageState extends State<LoginPage> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text('LOGIN'),
+                        : Text(_isSigningUp ? 'CREATE ACCOUNT' : 'LOGIN'),
+                  ),
+                ),
+                TextButton(
+                  onPressed: _isSigningIn ? null : _toggleAuthMode,
+                  child: Text(
+                    _isSigningUp
+                        ? 'Already have an account? Log in'
+                        : 'Create an account',
                   ),
                 ),
               ],

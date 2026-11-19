@@ -2,6 +2,8 @@ import 'package:demopcpsseca/controller/apicall.dart';
 import 'package:demopcpsseca/core/static.dart';
 import 'package:demopcpsseca/model/news.dart';
 import 'package:demopcpsseca/pages/detailpage.dart';
+import 'package:demopcpsseca/chatapp/pages/conversation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class dashboard extends StatefulWidget {
@@ -157,6 +159,22 @@ class dashboardState extends State<dashboard> {
   }
 
   Future<news?>? futurenewsdata;
+
+  Future<void> _signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+    } on FirebaseAuthException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Unable to sign out (${error.code}). Please try again.',
+          ),
+        ),
+      );
+    }
+  }
+
  @override
   void initState() {
     super.initState();
@@ -169,6 +187,24 @@ class dashboardState extends State<dashboard> {
       appBar: AppBar(
         title: Text("Dashboard"),
         centerTitle: true,
+        actions: [
+          IconButton(
+            tooltip: 'Conversations',
+            icon: const Icon(Icons.chat_bubble_outline),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (context) => const ConversationPage(),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            tooltip: 'Sign out',
+            icon: const Icon(Icons.logout),
+            onPressed: _signOut,
+          ),
+        ],
       ),
       body: Container(
           child: Column(

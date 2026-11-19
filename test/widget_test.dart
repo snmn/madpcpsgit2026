@@ -32,4 +32,22 @@ void main() {
 
     expect(find.text('Enter a valid email address.'), findsOneWidget);
   });
+
+  testWidgets('validates required sign-up fields', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const MaterialApp(home: LoginPage()));
+    await tester.ensureVisible(find.text('Create an account'));
+    await tester.tap(find.text('Create an account'));
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('CREATE ACCOUNT'));
+    await tester.tap(find.text('CREATE ACCOUNT'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Enter your name.'), findsOneWidget);
+    expect(find.text('Enter your email address.'), findsOneWidget);
+    expect(find.text('Enter your password.'), findsOneWidget);
+    expect(find.text('Confirm your password.'), findsOneWidget);
+  });
 }
