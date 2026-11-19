@@ -31,6 +31,7 @@ class MapSampleState extends State<MapSample> {
     maptheme = await rootBundle.loadString('raw/maps.json');
   }
   var showmaps =false;
+  var showbottomcard = false;
   delayfunction(){
     Future.delayed(Duration(seconds: 2)).whenComplete((){
       setState(() {
@@ -48,30 +49,62 @@ class MapSampleState extends State<MapSample> {
   }
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
         children: [
-          showmaps == false ?Container(
-            child: CircularProgressIndicator(),
-          ):GoogleMap(
-            mapType: MapType.normal,
-            style: maptheme,
-            initialCameraPosition: _kGooglePlex,
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-            },
-            markers: {
-              Marker(
-                infoWindow: InfoWindow(title: "PCPS",
-                snippet: "This is us"),
-                markerId: MarkerId("1"),
-                onTap: (){
-                 //
-                },
-                position: LatLng(27.68449167191457, 85.31691690915865)
-              )
-            },
+          Container(
+            height: size.height,
+            width: size.width,
+            child:  showmaps == false ?Container(
+              child: CircularProgressIndicator(),
+            ):GoogleMap(
+              mapType: MapType.normal,
+              style: maptheme,
+              initialCameraPosition: _kGooglePlex,
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+              markers: {
+                Marker(
+                    infoWindow: InfoWindow(title: "PCPS",
+                        snippet: "This is us"),
+                    markerId: MarkerId("1"),
+                    onTap: (){
+                      //
+                      setState(() {
+                        showbottomcard = !showbottomcard;
+                      });
+                    },
+                    position: LatLng(27.68449167191457, 85.31691690915865)
+                )
+              },
+            ),
           ),
+          Positioned(
+            bottom: 70,
+              child: showbottomcard?Container(
+                width: size.width,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.all(20),
+                        color: Colors.lightGreen,
+                                  height: size.height/4,width: size.width/1.5,
+                                  child: Text("PCPS "),
+                                ),
+                      Container(
+                        margin: EdgeInsets.all(20),
+                        color: Colors.lightGreen,
+                        height: size.height/4,width: size.width/1.5,
+                        child: Text("PCPS "),
+                      ),
+                    ],
+                  ),
+                ),
+              ):Container())
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
