@@ -1,5 +1,6 @@
 import 'package:demopcpsseca/controller/apicall.dart';
 import 'package:demopcpsseca/chatapp/pages/conversation.dart';
+import 'package:demopcpsseca/maps/pages/maps.dart';
 import 'package:demopcpsseca/model/news.dart';
 import 'package:demopcpsseca/pages/detailpage.dart';
 import 'package:flutter/material.dart';
@@ -184,6 +185,16 @@ class dashboardState extends State<dashboard> {
       ),
       body: Column(
         children: [
+          GestureDetector(
+            onTap: (){
+              //route to next page
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (context) => MapSample(),
+                ),
+              );
+            },
+              child: Icon(Icons.map)),
 
           FutureBuilder(
               future: futurenewsdata,

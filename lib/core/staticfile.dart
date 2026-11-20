@@ -12,6 +12,7 @@ class Staticfile {
   static String baseUrl = 'newsapi.org';
   static Articles? article;
   static String path = 'v2/everything';
+  static String mapskey = "AIzaSyDmMzGmGbjESph5OSbXVTktwB3OkVd6W18";
   static String dateconverter (String date){
     if(date.isEmpty || date == "" || date == " "){
       return "";
