@@ -28,6 +28,7 @@ class MapSampleState extends State<MapSample> {
     return Scaffold(
       body: GoogleMap(
         mapType: MapType.hybrid,
+
         initialCameraPosition: _kGooglePlex,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
