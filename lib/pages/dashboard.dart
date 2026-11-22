@@ -1,5 +1,6 @@
 import 'package:demopcpsseca/controller/apicall.dart';
 import 'package:demopcpsseca/core/static.dart';
+import 'package:demopcpsseca/maps/pages/maps.dart';
 import 'package:demopcpsseca/model/news.dart';
 import 'package:demopcpsseca/pages/detailpage.dart';
 import 'package:demopcpsseca/chatapp/pages/conversation.dart';
@@ -188,6 +189,17 @@ class dashboardState extends State<dashboard> {
         title: Text("Dashboard"),
         centerTitle: true,
         actions: [
+          IconButton(
+            tooltip: 'Maps',
+            icon: const Icon(Icons.map),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (context) => const MapSample(),
+                ),
+              );
+            },
+          ),
           IconButton(
             tooltip: 'Conversations',
             icon: const Icon(Icons.chat_bubble_outline),
