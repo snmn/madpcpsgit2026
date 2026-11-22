@@ -1,34 +1,34 @@
-import "dart:convert" as convert;
-
-import "package:demopcpsseca/model/news.dart";
-import "package:flutter/foundation.dart";
-import "package:http/http.dart" as http;
-import '../core/Staticfile.dart';
+import 'package:demopcpsseca/core/static.dart';
+import 'package:demopcpsseca/model/news.dart';
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 class Apicall {
-  Future<news?>? getnewsdata() async {
+  // function
+ Future<news?>? getapicall() async {
     //exception handling
     try{
       // ?q=apple
       // &sortBy=popularity
-      // &apiKey=a25a0c0b883c4f389ff5c23da0f9dfea
-      var url = Uri.https(
-        Staticfile.baseUrl,
-        Staticfile.path,
-        {'q': 'apple',
-          'sortBy': 'popularity',
-        'apiKey': Staticfile.apikey});
-      var response = await http.get(url);
-      if(response.statusCode.toString().contains("20")){
-        //parse
-        var jsonresponse = convert.jsonDecode(response.body);
-        var newsdata = news.fromJson(jsonresponse);
-        return newsdata;
-      }else{
-        //failure
-        return null;
-      }
-    }catch(e){
+    var url = Uri.https(Static.baseUrl,
+    Static.path,{
+      'q': "apple",
+       'sortBy': "popularity",
+       'apiKey': Static.apikey
+        });
+    var response = await http.get(url);
+    if(response.statusCode.toString().contains("20")){
+      var jsonresponse = convert.jsonDecode(response.body);
+      var data = news.fromJson(jsonresponse);
+      return data;
+    }else{
       return null;
+    }
+    }catch(e){
+      if (kDebugMode) {
+        print(e);
       }
+      return null;
+    }
   }
 }

@@ -553,10 +553,10 @@ packages:
     dependency: "direct main"
     description:
       name: smart_date_formatter
-      sha256: "76fedf45df36a4176eecfb840ac7faf5af46d69bf58a9584981c287e832f1a74"
+      sha256: "3adbbe1174a7c3616dadfac727b09e7d7c7234b59ca0435b499249cc50026df3"
       url: "https://pub.dev"
     source: hosted
-    version: "2.6.1"
+    version: "1.6.0"
   source_span:
     dependency: transitive
     description:

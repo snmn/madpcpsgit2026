@@ -1,11 +1,11 @@
 import 'package:demopcpsseca/controller/apicall.dart';
 import 'package:demopcpsseca/chatapp/pages/conversation.dart';
-import 'package:demopcpsseca/maps/pages/maps.dart';
+import 'package:demopcpsseca/core/static.dart';
+import 'package:demopcpsseca/maps/page/maps.dart';
 import 'package:demopcpsseca/model/news.dart';
-import 'package:demopcpsseca/pages/detailpage.dart';
+import 'package:demopcpsseca/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:demopcpsseca/core/staticfile.dart';
-
+import 'detailpage.dart';
 class dashboard extends StatefulWidget {
   const dashboard({super.key});
 
@@ -16,88 +16,107 @@ class dashboard extends StatefulWidget {
 class dashboardState extends State<dashboard> {
 
   Future<news?>? futurenewsdata;
-  @override
-  void initState() {
-    super.initState();
-    futurenewsdata = Apicall().getnewsdata();
+  final AuthService _auth = AuthService();
+
+  Future<void> _signOut() async {
+    await _auth.signOut();
   }
-
-  horizontallistitem(size, String title,url, date,Articles art ){
-
-    var formatted =  Staticfile.dateconverter(date);
-    date = formatted;
-
-    return GestureDetector(
-      onTap: (){
-        //yah katai static ma save garnu paryo
-        Staticfile.article = art;
-
-        //route
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (context) => detailpage(),
-          ),
-        );
-      },
-      child: Stack(
-        children: [
-          Container(
-            height: size.height/4.5,
-            width: size.width/1.4,
-            margin: EdgeInsets.all(15),
-            decoration: BoxDecoration(
-                color: Colors.black38,
-                borderRadius: BorderRadius.circular(20)
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.network(fit: BoxFit.cover,
-                  url),
-            ),
-          ),
-          Container(
-            height: size.height/4.5,
-            width: size.width/1.4,
-            margin: EdgeInsets.all(15),
-            decoration: BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.circular(20)
-            ),
-          ),
-          Positioned(
-            bottom: 45,
-            left: 30,
-            child: Container(
-              width: size.width/2,
-              child: Text(title,
-                overflow: TextOverflow.ellipsis,maxLines: 2,
-                style: TextStyle(color: Colors.white,fontSize: 16),),
-            ),
-          ),
-          Positioned(
-            bottom: 20,
-            left: 30,
-            child: Text(date,
-              style: TextStyle(color: Colors.white,fontSize: 16),),
-          ),
-          Positioned(
-              bottom: 30,right: 30,
-              child: Icon(Icons.play_circle_fill_rounded,color:
-              Colors.white,size: 40,))
-        ],
+  _gotomaps(){
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => MapSample(),
       ),
     );
   }
 
-  static verticallistitem(context,size, String title, url,
-      date, source, Articles art){
-    var formatted =  Staticfile.dateconverter(date);
+  @override
+  void initState() {
+    super.initState();
+    futurenewsdata = Apicall().getapicall();
+  }
+
+  horizontallistitem(size, String title,url, date , Articles art){
+    var formatted = Static.datetimeformatter(date);
+    date = formatted;
+  return GestureDetector(
+    onTap: (){
+      //save the values before route to new page
+      Static.article = art;
+
+      //route to new page
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (context) => detailpage(),
+        ),
+      );
+    },
+    child: Stack(
+      children: [
+        Container(
+          margin: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+              color: Colors.black26,
+              borderRadius: BorderRadius.circular(20)
+          ),
+          height: size.height/4.5,
+          width: size.width/1.5,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network(fit: BoxFit.cover,
+                url),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+              color: Colors.black38,
+              borderRadius: BorderRadius.circular(20)
+          ),
+          height: size.height/4.5,
+          width: size.width/1.5,
+        ),
+        Positioned(
+          bottom: 45,
+          left: 30,
+          child: Container(
+            width: size.width/2,
+            child: Text(title,
+              style: TextStyle(color: Colors.white,
+                  fontSize: 14),maxLines: 2,overflow: TextOverflow.ellipsis,),
+          ),
+        ),
+        Positioned(
+          bottom: 25,
+          left: 30,
+          child: Container(
+            width: size.width/2,
+            child: Text(date,
+              style: TextStyle(color: Colors.white,
+                  fontSize: 14),maxLines: 1,overflow: TextOverflow.ellipsis,),
+          ),
+        ),
+        Positioned(
+          bottom: 25,
+          right: 30,
+          child: Container(
+              child: Icon(Icons.play_circle_fill,
+                color: Colors.white,size: 45,) ),
+        )
+      ],
+    ),
+  );
+  }
+
+  static verticallistitem(context,size, String title, url, date, source,
+      Articles art){
+    var formatted = Static.datetimeformatter(date);
     date = formatted.split(",")[1];
-    return GestureDetector(
+    return  GestureDetector(
       onTap: (){
-        //yah katai static ma save garnu paryo
-        Staticfile.article = art;
-        //route
+        //save the values before route to new page
+        Static.article = art;
+
+        //route to new page
         Navigator.of(context).push(
           MaterialPageRoute<void>(
             builder: (context) => detailpage(),
@@ -109,54 +128,51 @@ class dashboardState extends State<dashboard> {
           Stack(
             children: [
               Container(
-                height: 120,
-                width: 120,
                 margin: EdgeInsets.all(15),
                 decoration: BoxDecoration(
-                    color: Colors.black54,
+                    color: Colors.black26,
                     borderRadius: BorderRadius.circular(20)
                 ),
+                height: 100,
+                width: 100,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.network(fit: BoxFit.cover,
                       url),
                 ),
               ),
-              Container(
-                height: 120,
-                width: 120,
-                margin: EdgeInsets.all(15),
-                child: Center(
-                  child: Icon(Icons.play_circle_fill_rounded,
-                    size: 50,color: Colors.white,),
-                ),
-              )
+              Positioned(top: 45,left: 45,child: Icon(Icons.play_circle_fill_rounded,
+                color: Colors.white,size: 40,))
             ],
           ),
           Container(
-            height: 90,
+            height: 85,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: size.width/2,
-                  child: Text(title
-                    ,maxLines: 2,overflow: TextOverflow.ellipsis,),
+                  width: size.width/1.6,
+                  child: Text(maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      title),
                 ),
                 Row(
                   children: [
                     Container(
-                      padding: EdgeInsets.only(left: 10,right: 10,
-                          top: 8,bottom: 8),
+
                       decoration: BoxDecoration(
                           color: Colors.red,
-                          borderRadius: BorderRadius.circular(20)
+                          borderRadius: BorderRadius.circular(15)
                       ),
-                      child: Text(source,style: TextStyle(color: Colors.white),),
+                      padding: EdgeInsets.only(left: 15,right: 15,top: 8,bottom: 8),
+                      child: Text(source,
+                        style: TextStyle(color: Colors.white),),
                     ),
-                    SizedBox(width: 15,),
-                    Text(date,)
+                    SizedBox(
+                      width: 25,
+                    ),
+                    Text(date),
+
                   ],
                 )
               ],
@@ -170,54 +186,59 @@ class dashboardState extends State<dashboard> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(),
+    return  Scaffold(
+      appBar: AppBar(
+        title: const Text("Dashboard"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.map),
+            onPressed: _gotomaps,
+            tooltip: "maps",
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _signOut,
+            tooltip: "Sign out",
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
-        tooltip: 'Chats',
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute<void>(
-              builder: (_) => const ConversationPage(),
+              builder: (context) => const ConversationPage(),
             ),
           );
         },
-        child: const Icon(Icons.chat_bubble_outline),
+        tooltip: "Messages",
+        child: const Icon(Icons.chat),
       ),
       body: Column(
         children: [
-          GestureDetector(
-            onTap: (){
-              //route to next page
-              Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (context) => MapSample(),
-                ),
-              );
-            },
-              child: Icon(Icons.map)),
 
           FutureBuilder(
               future: futurenewsdata,
-              builder: (context, AsyncSnapshot<news?> snapshot ){
-                switch (snapshot.connectionState) {
-                  case ConnectionState.active:
+              builder: (context,
+                  AsyncSnapshot<news?> snapshot){
+                switch (snapshot.connectionState){
                   case ConnectionState.none:
                   case ConnectionState.waiting:
                     return CircularProgressIndicator();
+                  case ConnectionState.active:
                   case ConnectionState.done:
                     if(snapshot.hasData){
                       var data = snapshot.data;
-                      //ui dekhaune
                       return Column(
                         children: [
                           Container(
-                            height: size.height/4,
+                            height: size.height/4.5,
                             child: ListView.builder(
                                 padding: EdgeInsets.zero,
                                 scrollDirection: Axis.horizontal,
                                 itemCount: data!.articles!.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return  horizontallistitem(size,
+                                  return  horizontallistitem(
+                                      size,
                                       data.articles![index].title!,
                                       data.articles![index].urlToImage,
                                       data.articles![index].publishedAt,
@@ -233,19 +254,22 @@ class dashboardState extends State<dashboard> {
                                 scrollDirection: Axis.vertical,
                                 itemCount: data!.articles!.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return  verticallistitem(context,size,
-                                      data.articles![index].title!.toUpperCase(),
+                                  return  verticallistitem(
+                                    context,
+                                      size,
+                                      data.articles![index].title!,
                                       data.articles![index].urlToImage,
-                                      data.articles![index].publishedAt!.split("T")[0],
+                                      data.articles![index].publishedAt,
                                       data.articles![index].source!.name,
-                                      data.articles![index]);
+                                      data.articles![index]
+                                  );
                                 }
                             ),
                           ),
                         ],
                       );
                     }else{
-                      return Center(child: Text("No Data"),);
+                      return Text("No Data");
                     }
                 }
               }),
