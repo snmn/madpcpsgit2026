@@ -5,11 +5,13 @@ class AppUser {
     required this.uid,
     required this.email,
     required this.createdAt,
+    this.fcmToken,
   });
 
   final String uid;
   final String email;
   final Timestamp createdAt;
+  final String? fcmToken;
 
   factory AppUser.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     final data = snapshot.data() ?? <String, dynamic>{};
@@ -17,6 +19,7 @@ class AppUser {
       uid: snapshot.id,
       email: (data['email'] as String?) ?? '',
       createdAt: (data['createdAt'] as Timestamp?) ?? Timestamp.now(),
+      fcmToken: data['fcmToken'] as String?,
     );
   }
 

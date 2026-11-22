@@ -72,6 +72,7 @@ class _ChatPageState extends State<ChatPage> {
     await _chatService.sendMessage(
       conversationId: _conversationId,
       senderId: _currentUid!,
+      recipientId: widget.otherUser.uid,
       text: text,
     );
   }

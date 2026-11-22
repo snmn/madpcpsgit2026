@@ -3,6 +3,9 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{uid} {
+      // fcmToken is readable by authenticated users so senders can notify
+      // recipients. Keep this value non-sensitive and consider a narrower
+      // token delivery design if stricter privacy is required.
       allow read: if request.auth != null;
       allow create, update, delete: if request.auth != null
         && request.auth.uid == uid;

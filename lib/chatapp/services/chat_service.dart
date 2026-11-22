@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/app_user.dart';
 import '../models/chat_message.dart';
+import 'notification_service.dart';
 
 class ChatService {
   ChatService({FirebaseFirestore? firestore})
@@ -50,6 +53,7 @@ class ChatService {
   Future<void> sendMessage({
     required String conversationId,
     required String senderId,
+    required String recipientId,
     required String text,
   }) async {
     final trimmedText = text.trim();
@@ -79,5 +83,41 @@ class ChatService {
         },
       );
     });
+
+    unawaited(
+      _sendPushBestEffort(
+        recipientId: recipientId,
+        senderId: senderId,
+        conversationId: conversationId,
+        text: trimmedText,
+      ),
+    );
+  }
+
+  Future<void> _sendPushBestEffort({
+    required String recipientId,
+    required String senderId,
+    required String conversationId,
+    required String text,
+  }) async {
+    try {
+      final recipientSnapshot =
+          await _firestore.collection('users').doc(recipientId).get();
+      final recipientToken =
+          (recipientSnapshot.data()?['fcmToken'] as String?)?.trim();
+      if (recipientToken == null || recipientToken.isEmpty) return;
+
+      await NotificationService.instance.sendPushNotification(
+        recipientToken: recipientToken,
+        title: 'New message',
+        body: text,
+        data: <String, dynamic>{
+          'conversationId': conversationId,
+          'senderId': senderId,
+        },
+      );
+    } catch (_) {
+      // Firestore delivery succeeds even if push delivery is unavailable.
+    }
   }
 }

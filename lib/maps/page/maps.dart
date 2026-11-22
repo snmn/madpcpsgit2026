@@ -20,20 +20,61 @@ class MapSampleState extends State<MapSample> {
 
   static const CameraPosition _kLake = CameraPosition(
     bearing: 192.8334901395799,
-    target: LatLng(37.43296265331129, -122.08832357078792),
+    target: LatLng(27.68464068736057, 85.31694662362598),
     tilt: 59.440717697143555,
     zoom: 19.151926040649414,
   );
-
+  var showbottomsheet = false;
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
-      body: GoogleMap(
-        mapType: MapType.hybrid,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
+      body: Stack(
+        children: [
+          GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: _kGooglePlex,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+            markers: { Marker(markerId: MarkerId("1"),
+                draggable: true,
+                onDragEnd: (changed){
+                //
+                },
+                onTap: (){
+              setState(() {
+                showbottomsheet = !showbottomsheet;
+              });
+                },
+                infoWindow: InfoWindow(
+                  title: "PCPS",
+                ),
+            position: LatLng(27.68464068736057, 85.31694662362598))},
+          ),
+          Positioned(
+            bottom: 40,
+            child: showbottomsheet==false?Container():SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.all(10),
+                    height: size.height/4.5,
+                    width: size.width/1.6,
+                    color: Colors.grey,
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(10),
+                    height: size.height/4.5,
+                    width: size.width/1.6,
+                    color: Colors.grey,
+                  )
+                ],
+              )
+            ),
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _goToTheLake,

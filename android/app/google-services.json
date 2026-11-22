@@ -1,39 +1,13 @@
 {
-  "info": [
-    {
-      "client": {
-        "mobilesdk_app_id": "<YOUR_ANDROID_APP_ID>",
-        "client_info": {
-          "mobilesdk_app_id": "<YOUR_ANDROID_APP_ID>",
-          "android_client_info": {
-            "package_name": "com.example.demopcpsseca"
-          }
-        },
-        "api_key": [
-          {
-            "current_key": "<YOUR_API_KEY>"
-          }
-        ],
-        "services": {
-          "appinvite_service": {
-            "other_platform_oauth_client": []
-          },
-          "analytics_service": {
-            "status": 1
-          },
-          "ads_service": {
-            "status": 2
-          }
-        }
-      },
-      "admob_app_id": "<YOUR_ADMOB_APP_ID>",
-      "client_url": "<YOUR_CLIENT_URL>"
-    }
-  ],
+  "project_info": {
+    "project_number": "503792237795",
+    "project_id": "chatappsecc",
+    "storage_bucket": "chatappsecc.firebasestorage.app"
+  },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "<YOUR_ANDROID_APP_ID>",
+        "mobilesdk_app_id": "1:503792237795:android:cb0364b7c0ea2a695599d6",
         "android_client_info": {
           "package_name": "com.example.demopcpsseca"
         }
@@ -41,19 +15,12 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "<YOUR_API_KEY>"
+          "current_key": "AIzaSyDcnWFNGp_oM8KbBPKRBDAzlMShwVlhO2I"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
           "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }

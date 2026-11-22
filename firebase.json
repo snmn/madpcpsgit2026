@@ -1,4 +1,8 @@
 {
+  "functions": {
+    "source": "functions",
+    "codebase": "chatapp"
+  },
   "firestore": {
     "database": "(default)",
     "location": "nam5",
